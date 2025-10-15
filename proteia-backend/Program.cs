@@ -29,15 +29,12 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure Swagger
-if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Proteia API v1");
-        options.RoutePrefix = string.Empty;
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Proteia API");
+    c.RoutePrefix = "swagger";
+});
 
 // Configure middleware
 app.UseCors("AllowAll");
@@ -46,12 +43,53 @@ app.UseCors("AllowAll");
 // SYSTEM ENDPOINTS
 // ============================================================================
 
-// Root endpoint redirects to Swagger
+// Root endpoint with simple HTML documentation
+app.MapGet("/", () => Results.Content(@"
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Proteia API</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; }
+        h1 { color: #2c3e50; }
+        .endpoint { background: #ecf0f1; padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .method { font-weight: bold; color: #27ae60; }
+        a { color: #3498db; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>🧬 Proteia Intelligence API</h1>
+        <p><strong>Status:</strong> ✅ Online - " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + @"</p>
+        
+        <h2>🔧 Diagnostic Endpoints</h2>
+        <div class='endpoint'>
+            <span class='method'>GET</span> <a href='/health'>/health</a> - Health check
+        </div>
+        <div class='endpoint'>
+            <span class='method'>GET</span> <a href='/test-db'>/test-db</a> - Test database connection
+        </div>
+        
+        <h2>🔐 Authentication</h2>
+        <div class='endpoint'>
+            <span class='method'>POST</span> /api/auth/login - User login
+        </div>
+        
+        <h2>📊 Products</h2>
+        <div class='endpoint'>
+            <span class='method'>GET</span> <a href='/api/products'>/api/products</a> - Get all products
+        </div>
+        
+        <p><strong>🔗 Test Database:</strong> <a href='/test-db'>Click here to test DB connection</a></p>
+        <p><strong>📝 Swagger Documentation:</strong> <a href='/swagger'>Open Swagger UI</a></p>
+    </div>
+</body>
+</html>", "text/html"));
+
 app.MapGet("/api", () => "Proteia Intelligence API v1.0 - " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
-app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.Now })
-   .WithName("HealthCheck")
-   .WithSummary("Health Check")
-   .WithDescription("Returns the health status of the API");
+app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.Now });
 
 app.MapGet("/test-db", async (ProteiaDbContext dbContext) => {
     try
@@ -74,10 +112,7 @@ app.MapGet("/test-db", async (ProteiaDbContext dbContext) => {
             innerException = ex.InnerException?.Message
         });
     }
-})
-.WithName("TestDatabase")
-.WithSummary("Test Database Connection")
-.WithDescription("Tests the database connection and returns diagnostics");
+});
 
 // ============================================================================
 // AUTHENTICATION ENDPOINTS
@@ -121,10 +156,7 @@ app.MapPost("/api/auth/login", async (LoginRequest request, ProteiaDbContext dbC
     {
         return Results.BadRequest(new { error = "Database error", details = ex.Message });
     }
-})
-.WithName("Login")
-.WithSummary("User Login")
-.WithDescription("Authenticate user with email and password. Valid users: admin@proteia.com/admin123, carlos@proteia.com/carlos123, demo@proteia.com/demo123");
+});
 
 app.MapPost("/api/auth/logout", () => Results.Ok(new { message = "Logged out successfully" }));
 app.MapGet("/api/auth/validate", () => Results.Ok(new { valid = true, user = "admin@proteia.com" }));
@@ -255,18 +287,12 @@ app.MapGet("/api/products", async (ProteiaDbContext dbContext) => {
     {
         return Results.BadRequest(new { error = "Database error", details = ex.Message });
     }
-})
-   .WithName("GetAllProducts")
-   .WithSummary("Get All Products")
-   .WithDescription("Returns all products from database with complete nutritional information and analysis");
+});
 
 app.MapGet("/api/products/{id}", (int id) => {
     var product = sampleProducts.FirstOrDefault(p => p.id == id);
     return product != null ? Results.Ok(product) : Results.NotFound(new { message = "Product not found" });
-})
-.WithName("GetProductById")
-.WithSummary("Get Product by ID")
-.WithDescription("Returns detailed information for a specific product by its ID");
+});
 
 app.MapGet("/api/products/asin/{asin}", (string asin) => {
     var product = sampleProducts.FirstOrDefault(p => p.asin == asin);
