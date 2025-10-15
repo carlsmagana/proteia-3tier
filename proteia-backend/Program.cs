@@ -1,5 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services for Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 // Add CORS
 builder.Services.AddCors(options =>
 {
@@ -13,6 +17,17 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Configure Swagger
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Proteia API v1");
+        options.RoutePrefix = string.Empty;
+    });
+}
+
 // Configure middleware
 app.UseCors("AllowAll");
 
@@ -20,66 +35,12 @@ app.UseCors("AllowAll");
 // SYSTEM ENDPOINTS
 // ============================================================================
 
-app.MapGet("/", () => Results.Content(@"
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Proteia Intelligence API</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
-        .endpoint { background: #ecf0f1; padding: 15px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #3498db; }
-        .method { font-weight: bold; color: #27ae60; }
-        .url { font-family: monospace; background: #34495e; color: white; padding: 2px 6px; border-radius: 3px; }
-        .status { color: #27ae60; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <h1>🧬 Proteia Intelligence API</h1>
-        <p><strong>Status:</strong> <span class='status'>✅ Online</span></p>
-        <p><strong>Version:</strong> 1.0.0</p>
-        <p><strong>Last Updated:</strong> " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + @"</p>
-        
-        <h2>📋 Available Endpoints</h2>
-        
-        <div class='endpoint'>
-            <div><span class='method'>GET</span> <span class='url'>/health</span></div>
-            <div>Health check endpoint</div>
-        </div>
-        
-        <div class='endpoint'>
-            <div><span class='method'>POST</span> <span class='url'>/api/auth/login</span></div>
-            <div>User authentication (admin@proteia.com / admin123)</div>
-        </div>
-        
-        <div class='endpoint'>
-            <div><span class='method'>GET</span> <span class='url'>/api/products</span></div>
-            <div>Get all products with complete nutritional information</div>
-        </div>
-        
-        <div class='endpoint'>
-            <div><span class='method'>GET</span> <span class='url'>/api/products/{id}</span></div>
-            <div>Get specific product by ID</div>
-        </div>
-        
-        <div class='endpoint'>
-            <div><span class='method'>GET</span> <span class='url'>/api/dashboard/market-overview</span></div>
-            <div>Complete market overview with category and brand stats</div>
-        </div>
-        
-        <div class='endpoint'>
-            <div><span class='method'>GET</span> <span class='url'>/api/dashboard/brand-analysis</span></div>
-            <div>Detailed brand analysis for Mexican protein market</div>
-        </div>
-        
-        <p><strong>🔗 Frontend:</strong> <a href='https://proteia-frontend.azurestaticapps.net'>https://proteia-frontend.azurestaticapps.net</a></p>
-        <p><strong>📊 Total Endpoints:</strong> 16</p>
-    </div>
-</body>
-</html>", "text/html"));
-app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.Now });
+// Root endpoint redirects to Swagger
+app.MapGet("/api", () => "Proteia Intelligence API v1.0 - " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.Now })
+   .WithName("HealthCheck")
+   .WithSummary("Health Check")
+   .WithDescription("Returns the health status of the API");
 
 // ============================================================================
 // AUTHENTICATION ENDPOINTS
@@ -101,7 +62,10 @@ app.MapPost("/api/auth/login", (LoginRequest request) => {
         });
     }
     return Results.Unauthorized();
-});
+})
+.WithName("Login")
+.WithSummary("User Login")
+.WithDescription("Authenticate user with email and password");
 
 app.MapPost("/api/auth/logout", () => Results.Ok(new { message = "Logged out successfully" }));
 app.MapGet("/api/auth/validate", () => Results.Ok(new { valid = true, user = "admin@proteia.com" }));
@@ -192,12 +156,18 @@ var sampleProducts = new[] {
 };
 
 // Products endpoints matching frontend service calls
-app.MapGet("/api/products", () => sampleProducts);
+app.MapGet("/api/products", () => sampleProducts)
+   .WithName("GetAllProducts")
+   .WithSummary("Get All Products")
+   .WithDescription("Returns all products with complete nutritional information and analysis");
 
 app.MapGet("/api/products/{id}", (int id) => {
     var product = sampleProducts.FirstOrDefault(p => p.id == id);
     return product != null ? Results.Ok(product) : Results.NotFound(new { message = "Product not found" });
-});
+})
+.WithName("GetProductById")
+.WithSummary("Get Product by ID")
+.WithDescription("Returns detailed information for a specific product by its ID");
 
 app.MapGet("/api/products/asin/{asin}", (string asin) => {
     var product = sampleProducts.FirstOrDefault(p => p.asin == asin);
