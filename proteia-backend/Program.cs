@@ -10,6 +10,8 @@ builder.Services.AddSwaggerGen();
 
 // Add Entity Framework
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"🔗 Connection String: {connectionString?.Substring(0, Math.Min(50, connectionString.Length ?? 0))}...");
+
 builder.Services.AddDbContext<ProteiaDbContext>(options =>
     options.UseSqlServer(connectionString));
 
@@ -50,6 +52,32 @@ app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.Now }
    .WithName("HealthCheck")
    .WithSummary("Health Check")
    .WithDescription("Returns the health status of the API");
+
+app.MapGet("/test-db", async (ProteiaDbContext dbContext) => {
+    try
+    {
+        var canConnect = await dbContext.Database.CanConnectAsync();
+        var userCount = canConnect ? await dbContext.Users.CountAsync() : 0;
+        
+        return Results.Ok(new {
+            canConnect = canConnect,
+            userCount = userCount,
+            connectionString = dbContext.Database.GetConnectionString()?.Substring(0, 50) + "...",
+            timestamp = DateTime.Now
+        });
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new {
+            error = "Database connection failed",
+            details = ex.Message,
+            innerException = ex.InnerException?.Message
+        });
+    }
+})
+.WithName("TestDatabase")
+.WithSummary("Test Database Connection")
+.WithDescription("Tests the database connection and returns diagnostics");
 
 // ============================================================================
 // AUTHENTICATION ENDPOINTS
