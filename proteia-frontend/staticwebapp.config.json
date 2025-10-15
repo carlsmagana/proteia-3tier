@@ -1,10 +1,6 @@
 {
   "routes": [
     {
-      "route": "/api/*",
-      "allowedRoles": ["authenticated"]
-    },
-    {
       "route": "/*",
       "serve": "/index.html",
       "statusCode": 200
@@ -16,12 +12,7 @@
   "mimeTypes": {
     ".json": "application/json",
     ".js": "application/javascript",
-    ".css": "text/css",
-    ".woff": "font/woff",
-    ".woff2": "font/woff2"
-  },
-  "globalHeaders": {
-    "Cache-Control": "public, max-age=31536000, immutable"
+    ".css": "text/css"
   },
   "responseOverrides": {
     "404": {
