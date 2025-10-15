@@ -104,6 +104,8 @@ builder.Logging.AddDebug();
 
 var app = builder.Build();
 
+// Configuración para Azure deployment
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
