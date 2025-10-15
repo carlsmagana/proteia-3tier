@@ -1,0 +1,59 @@
+name: Deploy Proteia Backend to Azure
+
+on:
+  push:
+    branches: [ main, master ]
+    paths: 
+      - 'proteia-backend/**'
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+jobs:
+  # =============================================
+  # DEPLOY BACKEND (Web App)
+  # =============================================
+  deploy-backend:
+    runs-on: ubuntu-latest
+    name: Deploy Backend to Azure
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: |
+        cd proteia-backend
+        dotnet restore
+
+    - name: Build application
+      run: |
+        cd proteia-backend
+        dotnet build --no-restore -c Release
+
+    - name: Run tests (optional)
+      run: |
+        cd proteia-backend
+        # dotnet test --no-build -c Release --verbosity normal
+
+    - name: Publish application
+      run: |
+        cd proteia-backend
+        dotnet publish --no-build -c Release -o ./publish
+
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'proteia-api'
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: './proteia-backend/publish'
+
+    - name: Verify deployment
+      run: |
+        echo "🚀 Backend deployed successfully!"
+        echo "🔗 URL: https://proteia-api.azurewebsites.net"
+        echo "🔍 Health check: https://proteia-api.azurewebsites.net/health"

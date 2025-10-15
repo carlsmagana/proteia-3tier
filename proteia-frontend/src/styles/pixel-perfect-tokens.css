@@ -1,0 +1,280 @@
+/* 🎯 PIXEL-PERFECT DESIGN TOKENS - PROTEIA PLATFORM */
+
+:root {
+  /* ===== COLORES EXACTOS ===== */
+  /* Basado en estándares de Material Design y Apple HIG */
+  --pp-primary-50: #EFF6FF;
+  --pp-primary-100: #DBEAFE;
+  --pp-primary-200: #BFDBFE;
+  --pp-primary-300: #93C5FD;
+  --pp-primary-400: #60A5FA;
+  --pp-primary-500: #3B82F6;   /* Primary main */
+  --pp-primary-600: #2563EB;   /* Primary dark */
+  --pp-primary-700: #1D4ED8;
+  --pp-primary-800: #1E40AF;
+  --pp-primary-900: #1E3A8A;
+
+  --pp-success-50: #ECFDF5;
+  --pp-success-100: #D1FAE5;
+  --pp-success-200: #A7F3D0;
+  --pp-success-300: #6EE7B7;
+  --pp-success-400: #34D399;
+  --pp-success-500: #10B981;   /* Success main */
+  --pp-success-600: #059669;
+  --pp-success-700: #047857;
+  --pp-success-800: #065F46;
+  --pp-success-900: #064E3B;
+
+  --pp-error-50: #FEF2F2;
+  --pp-error-100: #FEE2E2;
+  --pp-error-200: #FECACA;
+  --pp-error-300: #FCA5A5;
+  --pp-error-400: #F87171;
+  --pp-error-500: #EF4444;     /* Error main */
+  --pp-error-600: #DC2626;
+  --pp-error-700: #B91C1C;
+  --pp-error-800: #991B1B;
+  --pp-error-900: #7F1D1D;
+
+  --pp-warning-50: #FFFBEB;
+  --pp-warning-100: #FEF3C7;
+  --pp-warning-200: #FDE68A;
+  --pp-warning-300: #FCD34D;
+  --pp-warning-400: #FBBF24;
+  --pp-warning-500: #F59E0B;   /* Warning main */
+  --pp-warning-600: #D97706;
+  --pp-warning-700: #B45309;
+  --pp-warning-800: #92400E;
+  --pp-warning-900: #78350F;
+
+  /* Grises (Neutral) */
+  --pp-gray-50: #F9FAFB;
+  --pp-gray-100: #F3F4F6;
+  --pp-gray-200: #E5E7EB;
+  --pp-gray-300: #D1D5DB;
+  --pp-gray-400: #9CA3AF;
+  --pp-gray-500: #6B7280;
+  --pp-gray-600: #4B5563;
+  --pp-gray-700: #374151;
+  --pp-gray-800: #1F2937;
+  --pp-gray-900: #111827;
+
+  /* Backgrounds */
+  --pp-bg-primary: #FFFFFF;
+  --pp-bg-secondary: #F9FAFB;
+  --pp-bg-tertiary: #F3F4F6;
+  --pp-bg-quaternary: #E5E7EB;
+
+  /* ===== TIPOGRAFÍA EXACTA ===== */
+  /* Basado en escala tipográfica 1.25 (Major Third) */
+  --pp-font-family-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --pp-font-family-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Consolas, monospace;
+
+  /* Tamaños exactos en px para pixel-perfect */
+  --pp-text-xs: 12px;      /* 0.75rem */
+  --pp-text-sm: 14px;      /* 0.875rem */
+  --pp-text-base: 16px;    /* 1rem */
+  --pp-text-lg: 18px;      /* 1.125rem */
+  --pp-text-xl: 20px;      /* 1.25rem */
+  --pp-text-2xl: 24px;     /* 1.5rem */
+  --pp-text-3xl: 30px;     /* 1.875rem */
+  --pp-text-4xl: 36px;     /* 2.25rem */
+  --pp-text-5xl: 48px;     /* 3rem */
+  --pp-text-6xl: 60px;     /* 3.75rem */
+
+  /* Line heights exactos */
+  --pp-leading-xs: 16px;    /* 1.33 */
+  --pp-leading-sm: 20px;    /* 1.43 */
+  --pp-leading-base: 24px;  /* 1.5 */
+  --pp-leading-lg: 28px;    /* 1.56 */
+  --pp-leading-xl: 28px;    /* 1.4 */
+  --pp-leading-2xl: 32px;   /* 1.33 */
+  --pp-leading-3xl: 36px;   /* 1.2 */
+  --pp-leading-4xl: 40px;   /* 1.11 */
+
+  /* Pesos de fuente */
+  --pp-font-thin: 100;
+  --pp-font-extralight: 200;
+  --pp-font-light: 300;
+  --pp-font-normal: 400;
+  --pp-font-medium: 500;
+  --pp-font-semibold: 600;
+  --pp-font-bold: 700;
+  --pp-font-extrabold: 800;
+  --pp-font-black: 900;
+
+  /* ===== ESPACIADOS EXACTOS ===== */
+  /* Sistema de 4px base (4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96) */
+  --pp-space-0: 0px;
+  --pp-space-1: 4px;       /* 0.25rem */
+  --pp-space-2: 8px;       /* 0.5rem */
+  --pp-space-3: 12px;      /* 0.75rem */
+  --pp-space-4: 16px;      /* 1rem */
+  --pp-space-5: 20px;      /* 1.25rem */
+  --pp-space-6: 24px;      /* 1.5rem */
+  --pp-space-8: 32px;      /* 2rem */
+  --pp-space-10: 40px;     /* 2.5rem */
+  --pp-space-12: 48px;     /* 3rem */
+  --pp-space-16: 64px;     /* 4rem */
+  --pp-space-20: 80px;     /* 5rem */
+  --pp-space-24: 96px;     /* 6rem */
+  --pp-space-32: 128px;    /* 8rem */
+  --pp-space-40: 160px;    /* 10rem */
+  --pp-space-48: 192px;    /* 12rem */
+  --pp-space-56: 224px;    /* 14rem */
+  --pp-space-64: 256px;    /* 16rem */
+
+  /* ===== BORDES Y RADIOS EXACTOS ===== */
+  --pp-border-width-0: 0px;
+  --pp-border-width-1: 1px;
+  --pp-border-width-2: 2px;
+  --pp-border-width-4: 4px;
+  --pp-border-width-8: 8px;
+
+  --pp-radius-none: 0px;
+  --pp-radius-sm: 2px;
+  --pp-radius-base: 4px;
+  --pp-radius-md: 6px;
+  --pp-radius-lg: 8px;
+  --pp-radius-xl: 12px;
+  --pp-radius-2xl: 16px;
+  --pp-radius-3xl: 24px;
+  --pp-radius-full: 9999px;
+
+  /* ===== SOMBRAS EXACTAS ===== */
+  /* Basado en Material Design elevation */
+  --pp-shadow-xs: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  --pp-shadow-sm: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06);
+  --pp-shadow-base: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06);
+  --pp-shadow-md: 0px 4px 6px rgba(0, 0, 0, 0.07), 0px 2px 4px rgba(0, 0, 0, 0.06);
+  --pp-shadow-lg: 0px 10px 15px rgba(0, 0, 0, 0.1), 0px 4px 6px rgba(0, 0, 0, 0.05);
+  --pp-shadow-xl: 0px 20px 25px rgba(0, 0, 0, 0.1), 0px 10px 10px rgba(0, 0, 0, 0.04);
+  --pp-shadow-2xl: 0px 25px 50px rgba(0, 0, 0, 0.25);
+  --pp-shadow-inner: inset 0px 2px 4px rgba(0, 0, 0, 0.06);
+
+  /* ===== TRANSICIONES EXACTAS ===== */
+  --pp-duration-75: 75ms;
+  --pp-duration-100: 100ms;
+  --pp-duration-150: 150ms;
+  --pp-duration-200: 200ms;
+  --pp-duration-300: 300ms;
+  --pp-duration-500: 500ms;
+  --pp-duration-700: 700ms;
+  --pp-duration-1000: 1000ms;
+
+  --pp-ease-linear: linear;
+  --pp-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --pp-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --pp-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ===== BREAKPOINTS EXACTOS ===== */
+  --pp-screen-sm: 640px;
+  --pp-screen-md: 768px;
+  --pp-screen-lg: 1024px;
+  --pp-screen-xl: 1280px;
+  --pp-screen-2xl: 1536px;
+
+  /* ===== Z-INDEX SISTEMA ===== */
+  --pp-z-0: 0;
+  --pp-z-10: 10;
+  --pp-z-20: 20;
+  --pp-z-30: 30;
+  --pp-z-40: 40;
+  --pp-z-50: 50;
+  --pp-z-auto: auto;
+  --pp-z-dropdown: 1000;
+  --pp-z-sticky: 1020;
+  --pp-z-fixed: 1030;
+  --pp-z-modal-backdrop: 1040;
+  --pp-z-modal: 1050;
+  --pp-z-popover: 1060;
+  --pp-z-tooltip: 1070;
+  --pp-z-toast: 1080;
+
+  /* ===== COMPONENTES ESPECÍFICOS ===== */
+  
+  /* Botones */
+  --pp-btn-height-sm: 32px;
+  --pp-btn-height-md: 40px;
+  --pp-btn-height-lg: 48px;
+  --pp-btn-height-xl: 56px;
+
+  --pp-btn-padding-x-sm: 12px;
+  --pp-btn-padding-x-md: 16px;
+  --pp-btn-padding-x-lg: 24px;
+  --pp-btn-padding-x-xl: 32px;
+
+  --pp-btn-padding-y-sm: 6px;
+  --pp-btn-padding-y-md: 10px;
+  --pp-btn-padding-y-lg: 12px;
+  --pp-btn-padding-y-xl: 16px;
+
+  /* Inputs */
+  --pp-input-height-sm: 32px;
+  --pp-input-height-md: 40px;
+  --pp-input-height-lg: 48px;
+
+  --pp-input-padding-x: 12px;
+  --pp-input-padding-y: 8px;
+
+  /* Cards */
+  --pp-card-padding-sm: 16px;
+  --pp-card-padding-md: 24px;
+  --pp-card-padding-lg: 32px;
+
+  /* Header */
+  --pp-header-height: 72px;
+  --pp-header-padding-x: 24px;
+  --pp-header-padding-y: 16px;
+
+  /* Sidebar */
+  --pp-sidebar-width: 280px;
+  --pp-sidebar-width-collapsed: 64px;
+
+  /* Navigation */
+  --pp-nav-height: 56px;
+  --pp-nav-item-height: 40px;
+  --pp-nav-item-padding-x: 16px;
+}
+
+/* ===== CLASES UTILITARIAS PIXEL-PERFECT ===== */
+
+/* Tipografía */
+.pp-text-xs { font-size: var(--pp-text-xs); line-height: var(--pp-leading-xs); }
+.pp-text-sm { font-size: var(--pp-text-sm); line-height: var(--pp-leading-sm); }
+.pp-text-base { font-size: var(--pp-text-base); line-height: var(--pp-leading-base); }
+.pp-text-lg { font-size: var(--pp-text-lg); line-height: var(--pp-leading-lg); }
+.pp-text-xl { font-size: var(--pp-text-xl); line-height: var(--pp-leading-xl); }
+.pp-text-2xl { font-size: var(--pp-text-2xl); line-height: var(--pp-leading-2xl); }
+.pp-text-3xl { font-size: var(--pp-text-3xl); line-height: var(--pp-leading-3xl); }
+.pp-text-4xl { font-size: var(--pp-text-4xl); line-height: var(--pp-leading-4xl); }
+
+/* Pesos */
+.pp-font-light { font-weight: var(--pp-font-light); }
+.pp-font-normal { font-weight: var(--pp-font-normal); }
+.pp-font-medium { font-weight: var(--pp-font-medium); }
+.pp-font-semibold { font-weight: var(--pp-font-semibold); }
+.pp-font-bold { font-weight: var(--pp-font-bold); }
+
+/* Colores */
+.pp-text-primary { color: var(--pp-gray-900); }
+.pp-text-secondary { color: var(--pp-gray-600); }
+.pp-text-tertiary { color: var(--pp-gray-500); }
+.pp-text-quaternary { color: var(--pp-gray-400); }
+
+/* Backgrounds */
+.pp-bg-primary { background-color: var(--pp-bg-primary); }
+.pp-bg-secondary { background-color: var(--pp-bg-secondary); }
+.pp-bg-tertiary { background-color: var(--pp-bg-tertiary); }
+
+/* Sombras */
+.pp-shadow-xs { box-shadow: var(--pp-shadow-xs); }
+.pp-shadow-sm { box-shadow: var(--pp-shadow-sm); }
+.pp-shadow-md { box-shadow: var(--pp-shadow-md); }
+.pp-shadow-lg { box-shadow: var(--pp-shadow-lg); }
+.pp-shadow-xl { box-shadow: var(--pp-shadow-xl); }
+
+/* Transiciones */
+.pp-transition { transition: all var(--pp-duration-150) var(--pp-ease-in-out); }
+.pp-transition-fast { transition: all var(--pp-duration-100) var(--pp-ease-in-out); }
+.pp-transition-slow { transition: all var(--pp-duration-300) var(--pp-ease-in-out); }

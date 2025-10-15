@@ -1,0 +1,128 @@
+# 🚫 GITIGNORE PARA PROTEIA PLATFORM
+
+# =============================================
+# .NET BACKEND
+# =============================================
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+## Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+
+## Entity Framework
+*.edmx.diagram
+*.edmx.sql
+
+## Publish profiles (but keep the example)
+**/PublishProfiles/
+*.pubxml
+*.pubxml.user
+*.publishsettings
+
+# =============================================
+# REACT FRONTEND
+# =============================================
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+*.local
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor directories and files
+.vscode/
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# =============================================
+# DATABASE
+# =============================================
+*.mdf
+*.ldf
+*.bak
+
+# =============================================
+# AZURE & DEPLOYMENT
+# =============================================
+# Publish profiles with credentials
+*.PublishSettings
+*.publishsettings
+
+# Azure Web App publish settings
+PublishProfiles/
+
+# =============================================
+# LOGS & TEMP FILES
+# =============================================
+*.log
+logs/
+temp/
+tmp/
+
+# =============================================
+# MACOS
+# =============================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =============================================
+# WINDOWS
+# =============================================
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+
+# =============================================
+# SECRETS & CREDENTIALS
+# =============================================
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+*.key
+*.pem
+deployment-info.txt
