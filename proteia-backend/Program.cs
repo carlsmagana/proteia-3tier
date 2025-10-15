@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Proteia.API.Data;
 using Proteia.API.Models;
@@ -40,7 +41,7 @@ app.UseCors("AllowAll");
 app.MapGet("/", () => "Proteia API is running! " + DateTime.Now);
 app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.Now });
 
-app.MapGet("/test-db", async (ProteiaDbContext dbContext) => {
+app.MapGet("/test-db", async ([FromServices] ProteiaDbContext dbContext) => {
     try
     {
         var canConnect = await dbContext.Database.CanConnectAsync();
@@ -65,7 +66,7 @@ app.MapGet("/test-db", async (ProteiaDbContext dbContext) => {
 // AUTHENTICATION ENDPOINTS
 // ============================================================================
 
-app.MapPost("/api/auth/login", async (LoginRequest request, ProteiaDbContext dbContext) => {
+app.MapPost("/api/auth/login", async (LoginRequest request, [FromServices] ProteiaDbContext dbContext) => {
     try
     {
         if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
@@ -104,7 +105,7 @@ app.MapGet("/api/auth/validate", () => Results.Ok(new { valid = true, user = "ad
 // PRODUCTS ENDPOINTS
 // ============================================================================
 
-app.MapGet("/api/products", async (ProteiaDbContext dbContext) => {
+app.MapGet("/api/products", async ([FromServices] ProteiaDbContext dbContext) => {
     try
     {
         var products = await dbContext.Products
@@ -146,7 +147,7 @@ app.MapGet("/api/products", async (ProteiaDbContext dbContext) => {
     }
 });
 
-app.MapGet("/api/products/{id}", async (int id, ProteiaDbContext dbContext) => {
+app.MapGet("/api/products/{id}", async (int id, [FromServices] ProteiaDbContext dbContext) => {
     try
     {
         var product = await dbContext.Products
