@@ -25,30 +25,20 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Show .NET info
-      run: |
-        dotnet --version
-        dotnet --info
-
     - name: Restore dependencies
       run: |
         cd proteia-backend
-        dotnet restore --verbosity normal
+        dotnet restore
 
     - name: Build application
       run: |
         cd proteia-backend
-        dotnet build --no-restore -c Release --verbosity normal
-
-    - name: Run tests (optional)
-      run: |
-        cd proteia-backend
-        # dotnet test --no-build -c Release --verbosity normal
+        dotnet build -c Release
 
     - name: Publish application
       run: |
         cd proteia-backend
-        dotnet publish --no-build -c Release -o ./publish
+        dotnet publish -c Release -o ./publish
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
