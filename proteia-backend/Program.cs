@@ -1,8 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+using Proteia.API.Data;
+using Proteia.API.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services for Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add Entity Framework
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ProteiaDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -46,58 +55,35 @@ app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.Now }
 // AUTHENTICATION ENDPOINTS
 // ============================================================================
 
-app.MapPost("/api/auth/login", async (HttpContext context) => {
+app.MapPost("/api/auth/login", async (LoginRequest request, ProteiaDbContext dbContext) => {
     try
     {
-        // Read the request body
-        var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
-        
-        if (string.IsNullOrEmpty(body))
-        {
-            return Results.BadRequest(new { error = "Request body is required" });
-        }
-
-        // Parse JSON manually to handle any format
-        LoginRequest? request;
-        try
-        {
-            request = System.Text.Json.JsonSerializer.Deserialize<LoginRequest>(body, new System.Text.Json.JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-        }
-        catch (Exception ex)
-        {
-            return Results.BadRequest(new { error = "Invalid JSON format", details = ex.Message });
-        }
-
         if (request == null || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
         {
             return Results.BadRequest(new { error = "Email and password are required" });
         }
 
-        // Check multiple valid users
-        var validUsers = new Dictionary<string, (string password, string name, string role)>
-        {
-            { "admin@proteia.com", ("admin123", "Administrador Proteia", "admin") },
-            { "carlos@proteia.com", ("carlos123", "Carlos Magaña", "user") },
-            { "demo@proteia.com", ("demo123", "Usuario Demo", "user") },
-            { "test@proteia.com", ("test123", "Usuario Test", "user") }
-        };
-
         var email = request.Email.ToLower().Trim();
         
-        if (validUsers.ContainsKey(email) && validUsers[email].password == request.Password)
+        // Query the database for the user
+        var user = await dbContext.Users
+            .Include(u => u.UserRoles)
+            .ThenInclude(ur => ur.Role)
+            .FirstOrDefaultAsync(u => u.Email!.ToLower() == email && u.Password == request.Password);
+        
+        if (user != null)
         {
-            var user = validUsers[email];
+            // Get user role (default to 'user' if no role assigned)
+            var userRole = user.UserRoles.FirstOrDefault()?.Role?.NameRole ?? "user";
+            
             return Results.Ok(new {
-                token = "mock-jwt-token-" + Guid.NewGuid().ToString()[..8],
-                refreshToken = "mock-refresh-token-" + Guid.NewGuid().ToString()[..8],
+                token = "jwt-token-" + Guid.NewGuid().ToString()[..8],
+                refreshToken = "refresh-token-" + Guid.NewGuid().ToString()[..8],
                 user = new {
-                    id = email.GetHashCode(),
-                    email = request.Email,
-                    name = user.name,
-                    role = user.role
+                    id = user.IdUser,
+                    email = user.Email,
+                    name = user.NameUser,
+                    role = userRole
                 },
                 expiresIn = 3600
             });
@@ -107,7 +93,7 @@ app.MapPost("/api/auth/login", async (HttpContext context) => {
     }
     catch (Exception ex)
     {
-        return Results.BadRequest(new { error = "Server error", details = ex.Message });
+        return Results.BadRequest(new { error = "Database error", details = ex.Message });
     }
 })
 .WithName("Login")
@@ -203,10 +189,52 @@ var sampleProducts = new[] {
 };
 
 // Products endpoints matching frontend service calls
-app.MapGet("/api/products", () => sampleProducts)
+app.MapGet("/api/products", async (ProteiaDbContext dbContext) => {
+    try
+    {
+        var products = await dbContext.Products
+            .Include(p => p.Brand)
+            .Include(p => p.Category)
+            .Include(p => p.NutritionalInfo)
+            .Include(p => p.ProductAnalysis)
+            .Select(p => new {
+                id = p.IdProduct,
+                asin = p.Asin,
+                productName = p.ProductName,
+                brand = p.Brand != null ? p.Brand.NameBrand : "Unknown",
+                category = p.Category != null ? p.Category.NameCategory : "Unknown",
+                price = p.Price ?? 0,
+                rating = p.Rating ?? 0,
+                reviewCount = p.ReviewCount ?? 0,
+                estSales = p.EstSales ?? 0,
+                estRevenue = p.EstRevenue ?? 0,
+                nutritionalInfo = p.NutritionalInfo != null ? new {
+                    energy = p.NutritionalInfo.Energy,
+                    protein = p.NutritionalInfo.Protein,
+                    totalFat = p.NutritionalInfo.TotalFat,
+                    carbohydrates = p.NutritionalInfo.Carbohydrates,
+                    dietaryFiber = p.NutritionalInfo.DietaryFiber,
+                    sodium = p.NutritionalInfo.Sodium
+                } : null,
+                productAnalysis = p.ProductAnalysis != null ? new {
+                    valueProposition = p.ProductAnalysis.ValueProposition,
+                    keyLabels = p.ProductAnalysis.KeyLabels,
+                    intendedSegment = p.ProductAnalysis.IntendedSegment,
+                    similarityScore = p.ProductAnalysis.SimilarityScore
+                } : null
+            })
+            .ToListAsync();
+            
+        return Results.Ok(products);
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { error = "Database error", details = ex.Message });
+    }
+})
    .WithName("GetAllProducts")
    .WithSummary("Get All Products")
-   .WithDescription("Returns all products with complete nutritional information and analysis");
+   .WithDescription("Returns all products from database with complete nutritional information and analysis");
 
 app.MapGet("/api/products/{id}", (int id) => {
     var product = sampleProducts.FirstOrDefault(p => p.id == id);
