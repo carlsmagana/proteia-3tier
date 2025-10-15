@@ -11,12 +11,22 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 // Database Configuration
-builder.Services.AddDbContext<ProteiaDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (!string.IsNullOrEmpty(connectionString))
+{
+    builder.Services.AddDbContext<ProteiaDbContext>(options =>
+        options.UseSqlServer(connectionString));
+}
+else
+{
+    // Fallback para desarrollo sin BD
+    builder.Services.AddDbContext<ProteiaDbContext>(options =>
+        options.UseInMemoryDatabase("ProteiaInMemory"));
+}
 
 // JWT Configuration
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]!);
+var jwtSettings = builder.Configuration.GetSection("JWT");
+var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"] ?? "ProteiaJWTSecretKey2025VerySecureAndLongEnoughForProduction!");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -127,11 +137,16 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Health Check Endpoint
+// Health check endpoint
+app.MapGet("/", () => new { 
+    message = "Proteia API is running", 
+    timestamp = DateTime.UtcNow,
+    environment = app.Environment.EnvironmentName 
+});
+
 app.MapGet("/health", () => new { 
     status = "healthy", 
-    timestamp = DateTime.UtcNow,
-    version = "1.0.0"
+    timestamp = DateTime.UtcNow 
 });
 
 app.Run();

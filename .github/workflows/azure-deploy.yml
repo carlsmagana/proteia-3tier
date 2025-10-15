@@ -55,5 +55,5 @@ jobs:
     - name: Verify deployment
       run: |
         echo "🚀 Backend deployed successfully!"
-        echo "🔗 URL: https://proteia-api.azurewebsites.net"
-        echo "🔍 Health check: https://proteia-api.azurewebsites.net/health"
+        echo "🔗 URL: https://proteia-api-dvcegdeaf3execfd.westus2-01.azurewebsites.net"
+        echo "🔍 Health check: https://proteia-api-dvcegdeaf3execfd.westus2-01.azurewebsites.net/health"
