@@ -10,6 +10,11 @@ const API_CONFIG = {
   }
 };
 
+console.log('🔧 API Configuration:', {
+  environment: import.meta.env.MODE,
+  baseURL: API_CONFIG[import.meta.env.MODE as keyof typeof API_CONFIG]?.baseURL || API_CONFIG.production.baseURL
+});
+
 // Detectar entorno automáticamente
 const environment = import.meta.env.MODE || 'development';
 export const API_BASE_URL = API_CONFIG[environment as keyof typeof API_CONFIG].baseURL;
