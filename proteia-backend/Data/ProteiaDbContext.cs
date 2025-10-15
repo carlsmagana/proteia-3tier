@@ -9,11 +9,8 @@ namespace Proteia.API.Data
         {
         }
 
-        // DbSets for all entities
+        // DbSets for existing entities
         public DbSet<User> Users { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
-        public DbSet<UserSession> UserSessions { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<NutritionalInfo> NutritionalInfos { get; set; }
         public DbSet<ProductAnalysis> ProductAnalyses { get; set; }
@@ -32,31 +29,21 @@ namespace Proteia.API.Data
                 entity.Property(e => e.Password).HasMaxLength(50);
             });
 
-            // Configure UserRole relationships
-            modelBuilder.Entity<UserRole>(entity =>
-            {
-                entity.HasOne(ur => ur.User)
-                      .WithMany(u => u.UserRoles)
-                      .HasForeignKey(ur => ur.UserId);
-                      
-                entity.HasOne(ur => ur.Role)
-                      .WithMany(r => r.UserRoles)
-                      .HasForeignKey(ur => ur.RoleId);
-            });
-
-            // Configure Product relationships
+            // Configure Product relationships (if these tables exist)
             modelBuilder.Entity<NutritionalInfo>(entity =>
             {
                 entity.HasOne(n => n.Product)
                       .WithOne(p => p.NutritionalInfo)
-                      .HasForeignKey<NutritionalInfo>(n => n.ProductId);
+                      .HasForeignKey<NutritionalInfo>(n => n.ProductId)
+                      .IsRequired(false);
             });
             
             modelBuilder.Entity<ProductAnalysis>(entity =>
             {
                 entity.HasOne(pa => pa.Product)
                       .WithOne(p => p.ProductAnalysis)
-                      .HasForeignKey<ProductAnalysis>(pa => pa.ProductId);
+                      .HasForeignKey<ProductAnalysis>(pa => pa.ProductId)
+                      .IsRequired(false);
             });
         }
     }

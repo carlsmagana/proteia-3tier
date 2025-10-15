@@ -65,16 +65,14 @@ app.MapPost("/api/auth/login", async (LoginRequest request, ProteiaDbContext dbC
 
         var email = request.Email.ToLower().Trim();
         
-        // Query the database for the user
+        // Query the database for the user (simple query without roles)
         var user = await dbContext.Users
-            .Include(u => u.UserRoles)
-            .ThenInclude(ur => ur.Role)
             .FirstOrDefaultAsync(u => u.Email!.ToLower() == email && u.Password == request.Password);
         
         if (user != null)
         {
-            // Get user role (default to 'user' if no role assigned)
-            var userRole = user.UserRoles.FirstOrDefault()?.Role?.RoleName ?? "user";
+            // Default role since we don't have role tables
+            var userRole = "user";
             
             return Results.Ok(new {
                 token = "jwt-token-" + Guid.NewGuid().ToString()[..8],

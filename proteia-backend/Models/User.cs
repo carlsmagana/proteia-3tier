@@ -18,8 +18,6 @@ namespace Proteia.API.Models
         [StringLength(50)]
         public string? Password { get; set; }
         
-        // Navigation properties
-        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-        public virtual ICollection<UserSession> UserSessions { get; set; } = new List<UserSession>();
+        // Navigation properties removed since tables don't exist
     }
 }
