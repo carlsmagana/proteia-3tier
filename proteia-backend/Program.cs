@@ -2,15 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new() 
-    { 
-        Title = "Proteia Intelligence API", 
-        Version = "v1",
-        Description = "API completa para análisis del mercado mexicano de proteínas"
-    });
-});
+builder.Services.AddSwaggerGen();
 
 // Add CORS
 builder.Services.AddCors(options =>
@@ -35,7 +27,7 @@ app.UseCors("AllowFrontend");
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Proteia API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Proteia API");
     c.RoutePrefix = string.Empty;
 });
 
