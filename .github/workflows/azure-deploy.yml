@@ -24,16 +24,22 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
+        include-prerelease: false
+
+    - name: Show .NET info
+      run: |
+        dotnet --version
+        dotnet --info
 
     - name: Restore dependencies
       run: |
         cd proteia-backend
-        dotnet restore
+        dotnet restore --verbosity normal
 
     - name: Build application
       run: |
         cd proteia-backend
-        dotnet build --no-restore -c Release
+        dotnet build --no-restore -c Release --verbosity normal
 
     - name: Run tests (optional)
       run: |
