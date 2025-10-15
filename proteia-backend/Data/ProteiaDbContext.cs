@@ -15,8 +15,6 @@ namespace Proteia.API.Data
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<UserSession> UserSessions { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Brand> Brands { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<NutritionalInfo> NutritionalInfos { get; set; }
         public DbSet<ProductAnalysis> ProductAnalyses { get; set; }
 
@@ -39,39 +37,26 @@ namespace Proteia.API.Data
             {
                 entity.HasOne(ur => ur.User)
                       .WithMany(u => u.UserRoles)
-                      .HasForeignKey(ur => ur.IdUser);
+                      .HasForeignKey(ur => ur.UserId);
                       
                 entity.HasOne(ur => ur.Role)
                       .WithMany(r => r.UserRoles)
-                      .HasForeignKey(ur => ur.IdRole);
-            });
-
-            // Configure UserSession relationships
-            modelBuilder.Entity<UserSession>(entity =>
-            {
-                entity.HasOne(us => us.User)
-                      .WithMany(u => u.UserSessions)
-                      .HasForeignKey(us => us.IdUser);
+                      .HasForeignKey(ur => ur.RoleId);
             });
 
             // Configure Product relationships
-            modelBuilder.Entity<Product>(entity =>
+            modelBuilder.Entity<NutritionalInfo>(entity =>
             {
-                entity.HasOne(p => p.Brand)
-                      .WithMany(b => b.Products)
-                      .HasForeignKey(p => p.IdBrand);
-                      
-                entity.HasOne(p => p.Category)
-                      .WithMany(c => c.Products)
-                      .HasForeignKey(p => p.IdCategory);
-                      
-                entity.HasOne(p => p.NutritionalInfo)
-                      .WithOne(n => n.Product)
-                      .HasForeignKey<NutritionalInfo>(n => n.IdProduct);
-                      
-                entity.HasOne(p => p.ProductAnalysis)
-                      .WithOne(pa => pa.Product)
-                      .HasForeignKey<ProductAnalysis>(pa => pa.IdProduct);
+                entity.HasOne(n => n.Product)
+                      .WithOne(p => p.NutritionalInfo)
+                      .HasForeignKey<NutritionalInfo>(n => n.ProductId);
+            });
+            
+            modelBuilder.Entity<ProductAnalysis>(entity =>
+            {
+                entity.HasOne(pa => pa.Product)
+                      .WithOne(p => p.ProductAnalysis)
+                      .HasForeignKey<ProductAnalysis>(pa => pa.ProductId);
             });
         }
     }

@@ -74,7 +74,7 @@ app.MapPost("/api/auth/login", async (LoginRequest request, ProteiaDbContext dbC
         if (user != null)
         {
             // Get user role (default to 'user' if no role assigned)
-            var userRole = user.UserRoles.FirstOrDefault()?.Role?.NameRole ?? "user";
+            var userRole = user.UserRoles.FirstOrDefault()?.Role?.RoleName ?? "user";
             
             return Results.Ok(new {
                 token = "jwt-token-" + Guid.NewGuid().ToString()[..8],
@@ -89,7 +89,7 @@ app.MapPost("/api/auth/login", async (LoginRequest request, ProteiaDbContext dbC
             });
         }
         
-        return Results.Unauthorized(new { error = "Invalid email or password" });
+        return Results.Unauthorized();
     }
     catch (Exception ex)
     {
@@ -193,17 +193,15 @@ app.MapGet("/api/products", async (ProteiaDbContext dbContext) => {
     try
     {
         var products = await dbContext.Products
-            .Include(p => p.Brand)
-            .Include(p => p.Category)
             .Include(p => p.NutritionalInfo)
             .Include(p => p.ProductAnalysis)
             .Select(p => new {
-                id = p.IdProduct,
-                asin = p.Asin,
+                id = p.Id,
+                asin = p.ASIN,
                 productName = p.ProductName,
-                brand = p.Brand != null ? p.Brand.NameBrand : "Unknown",
-                category = p.Category != null ? p.Category.NameCategory : "Unknown",
-                price = p.Price ?? 0,
+                brand = p.Brand,
+                category = p.Category,
+                price = p.Price,
                 rating = p.Rating ?? 0,
                 reviewCount = p.ReviewCount ?? 0,
                 estSales = p.EstSales ?? 0,
