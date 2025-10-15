@@ -46,26 +46,73 @@ app.MapGet("/health", () => new { status = "healthy", timestamp = DateTime.Now }
 // AUTHENTICATION ENDPOINTS
 // ============================================================================
 
-app.MapPost("/api/auth/login", (LoginRequest request) => {
-    if (request.Email == "admin@proteia.com" && request.Password == "admin123")
+app.MapPost("/api/auth/login", async (HttpContext context) => {
+    try
     {
-        return Results.Ok(new {
-            token = "mock-jwt-token-" + Guid.NewGuid().ToString()[..8],
-            refreshToken = "mock-refresh-token-" + Guid.NewGuid().ToString()[..8],
-            user = new {
-                id = 1,
-                email = request.Email,
-                name = "Administrador Proteia",
-                role = "admin"
-            },
-            expiresIn = 3600
-        });
+        // Read the request body
+        var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
+        
+        if (string.IsNullOrEmpty(body))
+        {
+            return Results.BadRequest(new { error = "Request body is required" });
+        }
+
+        // Parse JSON manually to handle any format
+        LoginRequest? request;
+        try
+        {
+            request = System.Text.Json.JsonSerializer.Deserialize<LoginRequest>(body, new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+        }
+        catch (Exception ex)
+        {
+            return Results.BadRequest(new { error = "Invalid JSON format", details = ex.Message });
+        }
+
+        if (request == null || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
+        {
+            return Results.BadRequest(new { error = "Email and password are required" });
+        }
+
+        // Check multiple valid users
+        var validUsers = new Dictionary<string, (string password, string name, string role)>
+        {
+            { "admin@proteia.com", ("admin123", "Administrador Proteia", "admin") },
+            { "carlos@proteia.com", ("carlos123", "Carlos Magaña", "user") },
+            { "demo@proteia.com", ("demo123", "Usuario Demo", "user") },
+            { "test@proteia.com", ("test123", "Usuario Test", "user") }
+        };
+
+        var email = request.Email.ToLower().Trim();
+        
+        if (validUsers.ContainsKey(email) && validUsers[email].password == request.Password)
+        {
+            var user = validUsers[email];
+            return Results.Ok(new {
+                token = "mock-jwt-token-" + Guid.NewGuid().ToString()[..8],
+                refreshToken = "mock-refresh-token-" + Guid.NewGuid().ToString()[..8],
+                user = new {
+                    id = email.GetHashCode(),
+                    email = request.Email,
+                    name = user.name,
+                    role = user.role
+                },
+                expiresIn = 3600
+            });
+        }
+        
+        return Results.Unauthorized(new { error = "Invalid email or password" });
     }
-    return Results.Unauthorized();
+    catch (Exception ex)
+    {
+        return Results.BadRequest(new { error = "Server error", details = ex.Message });
+    }
 })
 .WithName("Login")
 .WithSummary("User Login")
-.WithDescription("Authenticate user with email and password");
+.WithDescription("Authenticate user with email and password. Valid users: admin@proteia.com/admin123, carlos@proteia.com/carlos123, demo@proteia.com/demo123");
 
 app.MapPost("/api/auth/logout", () => Results.Ok(new { message = "Logged out successfully" }));
 app.MapGet("/api/auth/validate", () => Results.Ok(new { valid = true, user = "admin@proteia.com" }));
@@ -329,3 +376,4 @@ app.Run();
 // ============================================================================
 
 public record LoginRequest(string Email, string Password);
+
