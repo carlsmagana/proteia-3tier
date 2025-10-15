@@ -10,7 +10,7 @@ builder.Services.AddSwaggerGen();
 
 // Add Entity Framework
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-Console.WriteLine($"🔗 Connection String: {connectionString?.Substring(0, Math.Min(50, connectionString.Length ?? 0))}...");
+Console.WriteLine($"🔗 Connection String: {(string.IsNullOrEmpty(connectionString) ? "NULL" : connectionString.Substring(0, Math.Min(50, connectionString.Length)))}...");
 
 builder.Services.AddDbContext<ProteiaDbContext>(options =>
     options.UseSqlServer(connectionString));
